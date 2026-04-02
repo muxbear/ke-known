@@ -1,12 +1,12 @@
 from langchain.agents import create_agent
 
-from agent.model.llm import deepseek_llm
+from agent.model.llm import deepseek_lm
 from agent.tool.rag_retriever_tool import RAGRetrieverTool
 
 rag_tool = RAGRetrieverTool()
 
 graph = create_agent(
-    model=deepseek_llm,
+    model=deepseek_lm,
     tools=[rag_tool],
     system_prompt="你是一个个人助手智能体，尽量调用工具来回答我的问题"
 )
