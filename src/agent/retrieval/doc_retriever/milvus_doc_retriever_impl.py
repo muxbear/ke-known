@@ -1,11 +1,10 @@
-import os
-
 from langchain_core.documents import Document
 from langchain_milvus import Milvus, BM25BuiltInFunction
 from pymilvus import MilvusException, IndexType
 from pymilvus.client.types import MetricType
 
-from agent.model.vm import zhipuai_em
+from agent.config.config import MILVUS_URI, MILVUS_USER, MILVUS_PASSWORD
+from agent.model.vm import dashscope_em
 from agent.retrieval.doc_storer.doc_storer import DocStorer
 
 
@@ -14,9 +13,9 @@ class MilvusDocStorerImpl(DocStorer):
     milvus_storer: Milvus = None
 
     def __init__(self):
-        self.MILVUS_URI = os.environ.get("MILVUS_URI")
-        self.MILVUS_USER = os.environ.get("MILVUS_USER")
-        self.MILVUS_PASSWORD = os.environ.get("MILVUS_PASSWORD")
+        self.MILVUS_URI = MILVUS_URI
+        self.MILVUS_USER = MILVUS_USER
+        self.MILVUS_PASSWORD = MILVUS_PASSWORD
 
     def connect_collection(self, db_name: str, collection_name: str):
         index_params = [
@@ -48,7 +47,7 @@ class MilvusDocStorerImpl(DocStorer):
             # 注意，langchain-milvus 的版本只有 2.6.9 报错：TypeError: pymilvus.milvus_client.index.IndexParams.add_index() got multiple values for keyword argument 'field_name'
             # 2.6.10, 2.6.11 均报错：
             self.milvus_storer = Milvus(
-                embedding_function=zhipuai_em,
+                embedding_function=dashscope_em,
                 collection_name=collection_name,
                 vector_field=["sparse", "dense"],
                 builtin_function=BM25BuiltInFunction(
